@@ -162,6 +162,30 @@ app.get('/calc-residential', (req, res) => {
   res.json(result);
 });
 
+//// Endpoint for contact us 
+app.get('/contact-us', (req, res) => {
+  // Extract data from the request body
+  const { first_name, last_name, message } = req.body;
+
+  // Log the entire request
+  console.log('Received message:', req.body);
+
+  // Validate input
+  if (!first_name || !last_name || !message) {
+      return res.status(400).json({
+          error: 'All fields (first_name, last_name, message) are required.'
+      });
+  }
+
+  // Create a response message
+  const responseMessage = `Thank you, ${first_name} ${last_name}, for your message!`;
+
+  // Send the response back to the client
+  res.status(200).json({
+      message: responseMessage
+  });
+});
+
 
 // starts the server on the specified port and allows me to 
 //add aditional code once the server is running
