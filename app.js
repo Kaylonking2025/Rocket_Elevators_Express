@@ -12,7 +12,7 @@ const agents = require('./agent.js');
 const bodyParser = require('body-parser');
 
 // Import the calculations module
-const { calculateElevatorsAndCost } = require('./elevatorCalculations.js'); 
+const { calculateElevators,calculateCost, costs, } = require('./elevatorCalculations.js'); 
 
 // Load environment variables from .env file
 env.config();
@@ -121,7 +121,7 @@ app.get('/region-avg', (req,res) => {
 
 //
 // Endpoint for calculating elevators and costs
-app.post('/calc-residential', (req, res) => {
+app.get('/calc-residential', (req, res) => {
   const { apartments, floors, tier } = req.body;
 
   // Validate input
@@ -132,9 +132,13 @@ app.post('/calc-residential', (req, res) => {
       return res.status(500).json({ message: "Invalid tier. Must be 'standard', 'premium', or 'excelium'." });
   }
 
+  // Convert to numbers
+  const apartmentsNum = Number(apartments);
+  const floorsNum = Number(floors);
+
   //Checks if the apartments input is a number, if the apartments value is an integer,
   //is greater than zero 
-  if (typeof apartments !== 'number' || !Number.isInteger(apartments) || apartments <= 0) {
+  if (typeof apartmentsNum !== 'number' || !Number.isInteger(apartmentsNum) || apartmentsNum <= 0) {
 
     //It resonds with a error code & returns with an error message 
     //stating that the number must be a positive integer
@@ -144,15 +148,15 @@ app.post('/calc-residential', (req, res) => {
 
   //Checks if the floors input is a number & if the floors value is an integer
   //& if the number of floors is greater than zero & also 
-  if (typeof floors !== 'number' || !Number.isInteger(floors) || floors <= 0) {
+  if (typeof floorsNum !== 'number' || !Number.isInteger(floorsNum) || floorsNum <= 0) {
 
     //It resonds with a error code & returns with an error message 
     //stating that the number must be a positive integer
       return res.status(500).json({ message: "Floors must be a positive integer." });
   }
 
-  // Calculate elevators and cost
-  const result = calculateElevatorsAndCost(apartments, floors, tier);
+  // Calculate elevators
+  const result = calculateCost(apartmentsNum, floorsNum, tier);
   
   //is a convenient method in js for sending responses to the client
   res.json(result);
