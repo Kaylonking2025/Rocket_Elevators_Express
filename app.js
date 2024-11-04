@@ -5,10 +5,10 @@ const express = require('express');
 //imports the variables from a .env file into your app.js
 const env = require("dotenv")
 
-// Import the agents data
+// Imports the agents data
 const agents = require('./agent.js');
 
-//
+// Imports the body-parser middleware
 const bodyParser = require('body-parser');
 
 // Import the calculations module
