@@ -23,7 +23,7 @@ const app = express();
 // enables the Express application to handle JSON request
 app.use(express.json());
 
-//
+// allows access to request body data in JSON format via req.body
 app.use(bodyParser.json());
 
 //  sets up a specific port for the server

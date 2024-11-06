@@ -35,7 +35,7 @@ const agents = [
     }
 };
   
-  module.exports = agents,costs;
+  module.exports = {agents,costs};
 
 
 
