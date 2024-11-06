@@ -6,7 +6,7 @@ const express = require('express');
 const env = require("dotenv")
 
 // Imports the agents data
-const agents = require('./agent.js');
+const { agents } = require('./agent.js');
 
 // Imports the body-parser middleware
 const bodyParser = require('body-parser');
@@ -87,6 +87,7 @@ app.get('/region-avg', (req,res) => {
   if (!region) {
     return res.status(500).json({ message: "No Agents Were Found." });
   }
+  console.log(agents)
   // filters the list of agents based on the specified region.
   const filteredAgents = agents.filter(agent => agent.region.toLowerCase() === region.toLowerCase());
 
