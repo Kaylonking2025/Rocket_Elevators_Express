@@ -1,4 +1,3 @@
-//Agent information 
 const agents = [
   {first_name:"Orlando",last_name:"Perez",email:"perez@rocket.elv",region:"north",rating:95,fee:10000},
   {first_name:"Brutus",last_name:"Konway",email:"brutus@rocket.elv",region:"north",rating:92,fee:9000},
@@ -18,8 +17,6 @@ const agents = [
   {first_name:"Al",last_name:"Stein",email:"relative@rocket.elv",region:"south",rating:54,fee:4000}
   ];
 
-
-  // different types of elevators, costs, and fees
   const costs = {
     standard: {
         elevatorCost: 8000,
@@ -35,7 +32,7 @@ const agents = [
     }
 };
   
-  module.exports = {agents,costs};
+  module.exports = agents,costs;
 
 
 

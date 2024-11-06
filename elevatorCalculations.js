@@ -1,6 +1,26 @@
 // Import the calculations module
 const { costs } = require('./agent.js'); 
 
+// this function is for validating inputs
+function validateInputs(apartments, floors, tier) {
+    if (!costs[tier]) {
+        return { valid: false, message: `Invalid tier: ${tier}` };
+    }
+
+    if (typeof apartments !== 'number' || typeof floors !== 'number') {
+        return { valid: false, message: 'Apartments and floors must be numbers.' };
+    }
+
+    if (!Number.isInteger(apartments) || !Number.isInteger(floors)) {
+        return { valid: false, message: 'Apartments and floors must be integers.' };
+    }
+
+    if (apartments <= 0 || floors <= 0) {
+        return { valid: false, message: 'Apartments and floors must be greater than zero.' };
+    }
+
+    return { valid: true };
+}
 
 // this function is to calculate the number of elevators and total cost
 function calculateElevators(apartments, floors) {
@@ -12,33 +32,28 @@ function calculateElevators(apartments, floors) {
     return totalElevators;
 }
 
-
 // this function is to calculate total cost based on tier
 function calculateCost(apartments, floors, tier) {
-    console.log(tier)
-    
-    //get the particular tier out of the costs object
+    const validation = validateInputs(apartments, floors, tier);
+    if (!validation.valid) {
+        return { status: 'error', message: validation.message };
+    }
 
-    const totalElevators = calculateElevators(apartments, floors); 
-
-    const selectedTier = costs[tier]
+    const tierCosts = costs[tier];
+    const totalElevators = calculateElevators(apartments, floors);
 
     // Total cost calculation
-    const totalCost = (selectedTier.elevatorCost * totalElevators) + (selectedTier.installationCost * totalElevators);
-    
-    console.log(totalCost)
+    const totalCost = (tierCosts.elevatorCost * totalElevators) + (tierCosts.installationCost * totalElevators);
+
     return {
         status: 'success',
         totalCost,
         totalElevators
     };
-
-    
 }
 
 // Export functions
 module.exports = {
     calculateElevators,
     calculateCost,
-
 };
