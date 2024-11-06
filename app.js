@@ -5,10 +5,10 @@ const express = require('express');
 //imports the variables from a .env file into your app.js
 const env = require("dotenv")
 
-// Import the agents data
-const agents = require('./agent.js');
+// Imports the agents data
+const { agents } = require('./agent.js');
 
-//
+// Imports the body-parser middleware
 const bodyParser = require('body-parser');
 
 // Import the calculations module
@@ -23,7 +23,7 @@ const app = express();
 // enables the Express application to handle JSON request
 app.use(express.json());
 
-//
+// allows access to request body data in JSON format via req.body
 app.use(bodyParser.json());
 
 //  sets up a specific port for the server
@@ -87,6 +87,7 @@ app.get('/region-avg', (req,res) => {
   if (!region) {
     return res.status(500).json({ message: "No Agents Were Found." });
   }
+  console.log(agents)
   // filters the list of agents based on the specified region.
   const filteredAgents = agents.filter(agent => agent.region.toLowerCase() === region.toLowerCase());
 
