@@ -5,17 +5,21 @@ const express = require('express');
 //imports the variables from a .env file into your app.js
 const env = require("dotenv")
 
-// Imports the agents data
-const { agents } = require('./agent.js');
+// Load environment variables from .env file
+env.config();
 
 // Imports the body-parser middleware
 const bodyParser = require('body-parser');
 
+// Imports the agents data
+const { agents } = require('./agent.js');
+
+
+
 // Import the calculations module
 const { calculateElevators,calculateCost, costs, } = require('./elevatorCalculations.js'); 
 
-// Load environment variables from .env file
-env.config();
+
 
 // sets up the Express application
 const app = express();
@@ -33,6 +37,7 @@ const port = process.env.port;
 const environment = process.env.environment; 
 
 
+//===========================================/HELLO ENDPOINT===========================================//
 
 // sets up a endpoint in the application to handle GET requests
 app.get('/hello', (req,res) => {
@@ -45,6 +50,8 @@ app.get('/hello', (req,res) => {
 
 });
 
+//===========================================/STATUS ENDPOINT===========================================//
+
 //sets up a endpoint in the application to handle GET requests
 app.get('/status', (req,res) => {
 
@@ -54,6 +61,8 @@ app.get('/status', (req,res) => {
   //Create a status route
   res.send(`Server is running on port ${port} in ${environment} mode.`,)
 });
+
+//===========================================/ERROR ENDPOINT===========================================//
 
 //requests an error endpoint.
 app.get('/error', (req,res) => {
@@ -66,6 +75,9 @@ app.get('/error', (req,res) => {
 
 });
 
+//===========================================/EMAIL-LIST ENDPOINT===========================================//
+
+
 // Create an email list route
 app.get('/email-list', (req, res) => {
 
@@ -76,6 +88,7 @@ app.get('/email-list', (req, res) => {
   res.json({ emails: emailList });
 });
 
+//===========================================/REGION-AVG ENDPOINT===========================================//
 
 //creates a region average route
 app.get('/region-avg', (req,res) => {
@@ -85,15 +98,22 @@ app.get('/region-avg', (req,res) => {
 
   // checks if the region variable has a value
   if (!region) {
-    return res.status(500).json({ message: "No Agents Were Found." });
+    return res.status(500).json({ message: "Request Query Region not received." });
   }
-  console.log(agents)
+
+  if(region !== "north"||
+    region !== "south"||
+    region !== "east"|| 
+    region !== "west"){
+      return res.status(500).json({ message: "Invalid region recieved" });
+  }
+
   // filters the list of agents based on the specified region.
   const filteredAgents = agents.filter(agent => agent.region.toLowerCase() === region.toLowerCase());
 
   //checks for any agents from the specified a region.
   if (filteredAgents.length === 0) {
-    return res.json({ message: `No agents found in the supplied region: ${region}.` });
+    return res.json(500)({ message: `No agents found in the supplied region: ${region}.` });
   }
 
   //calculates the total rating of all agents within filter agents
@@ -109,7 +129,7 @@ app.get('/region-avg', (req,res) => {
   const averageFee = ((totalFee / filteredAgents.length).toFixed(2));
 
   //sends the final response back to the client
-  res.json({
+  res.json(200)({
     region: region,
 
      // Convert to float for proper JSON
@@ -120,7 +140,8 @@ app.get('/region-avg', (req,res) => {
   });
 });
 
-//
+//===========================================/CALC-RESIDENTIAL ENDPOINT===========================================//
+
 // Endpoint for calculating elevators and costs
 app.get('/calc-residential', (req, res) => {
   const { apartments, floors, tier } = req.body;
@@ -139,11 +160,14 @@ app.get('/calc-residential', (req, res) => {
 
   //Checks if the apartments input is a number, if the apartments value is an integer,
   //is greater than zero 
-  if (typeof apartmentsNum !== 'number' || !Number.isInteger(apartmentsNum) || apartmentsNum <= 0) {
-
-    //It resonds with a error code & returns with an error message 
-    //stating that the number must be a positive integer
-      return res.status(500).json({ message: "Apartments must be a positive integer." });
+  if (typeof apartmentsNum !== 'number'){
+    return res.status(400).json({ message: "Apartments must be a number." });
+  }
+  if(!Number.isInteger(apartmentsNum)){
+    return res.status(400).json({ message: "Apartments must be a whole number." });
+  }
+  if(apartmentsNum <= 0){
+    return res.status(400).json({ message: "Number of apartments needs to be greater than 0" }); 
   }
 
 
@@ -160,8 +184,10 @@ app.get('/calc-residential', (req, res) => {
   const result = calculateCost(apartmentsNum, floorsNum, tier);
   
   //is a convenient method in js for sending responses to the client
-  res.json(result);
+  res.json(200)(result);
 });
+
+//===========================================/CONTACT-US ENDPOINT===========================================//
 
 //// Endpoint for contact us 
 app.get('/contact-us', (req, res) => {
@@ -187,6 +213,7 @@ app.get('/contact-us', (req, res) => {
   });
 });
 
+//===========================================/SERVER INITIALIAZATION===========================================//
 
 // starts the server on the specified port and allows me to 
 //add aditional code once the server is running
