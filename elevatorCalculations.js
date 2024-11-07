@@ -15,7 +15,7 @@ function calculateElevators(apartments, floors) {
 
 // this function is to calculate total cost based on tier
 function calculateCost(apartments, floors, tier) {
-    console.log(tier)
+
     
     //get the particular tier out of the costs object
 
@@ -26,11 +26,10 @@ function calculateCost(apartments, floors, tier) {
     // Total cost calculation
     const totalCost = (selectedTier.elevatorCost * totalElevators) + (selectedTier.installationCost * totalElevators);
     
-    console.log(totalCost)
     return {
         status: 'success',
-        totalCost,
-        totalElevators
+        total_Cost:totalCost,
+        total_elevators:totalElevators
     };
 
     
